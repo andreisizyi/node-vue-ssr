@@ -4,5 +4,5 @@ USER root
 
 RUN echo 'hello'
 
-ENTRYPOINT ["tail"]
-CMD ["-f","/dev/null"]
+# CMD node example.js ; tail -f /dev/null
+CMD node server.js
