@@ -1,0 +1,15 @@
+FROM node:18
+
+USER root
+
+# RUN apt-get update --fix-missing
+# RUN apt-get install -y \
+#             supervisor \
+#             cron \
+#             wget \
+#             git \
+#             libzip-dev \
+#             zip \
+#             libpq-dev \
+#             libpq5 \
+#             nodejs npm
