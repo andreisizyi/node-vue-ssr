@@ -1,14 +1,38 @@
-import express from 'express'
-import { createSSRApp } from 'vue'
-import { renderToString } from 'vue/server-renderer'
+import express from 'express';
+import { renderToString } from 'vue/server-renderer';
+import { createApp } from './app.js';
 
-const server = express()
+const server = express();
+
+server.get('/page', (req, res) => {
+    const app = createApp();
+
+    renderToString(app).then((html) => {
+        res.send(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Vue SSR Example</title>
+            <script type="importmap">
+            {
+                "imports": {
+                "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+                }
+            }
+            </script>
+            <script type="module" src="/client.js"></script>
+        </head>
+        <body>
+            ${ req.query.color }
+            <div id="app">${html}</div> sdafasd
+        </body>
+        </html>
+        `);
+    });
+})
 
 server.get('/', (req, res) => {
-  const app = createSSRApp({
-    data: () => ({ count: 1 }),
-    template: `<button @click="count++">{{ count }}</button>`
-  })
+  const app = createApp();
 
   renderToString(app).then((html) => {
     res.send(`
@@ -16,15 +40,25 @@ server.get('/', (req, res) => {
     <html>
       <head>
         <title>Vue SSR Example</title>
+        <script type="importmap">
+          {
+            "imports": {
+              "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+            }
+          }
+        </script>
+        <script type="module" src="/client.js"></script>
       </head>
       <body>
         <div id="app">${html}</div>
       </body>
     </html>
-    `)
-  })
-})
+    `);
+  });
+});
+
+server.use(express.static('.'));
 
 server.listen(80, () => {
-  console.log('ready')
-})
+  console.log('ready');
+});
